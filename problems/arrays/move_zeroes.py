@@ -1,5 +1,4 @@
 import random
-from performance_tester import PerformanceTester
 import multiprocessing
 
 
@@ -42,6 +41,13 @@ def get_data(size: int):
 
 
 if __name__ == "__main__":
+    try:
+        from performance_tester import PerformanceTester
+    except ModuleNotFoundError:
+        import sys
+        from pathlib import Path
+        sys.path.append(str(Path(__file__).resolve().parents[2]))
+        from performance_tester import PerformanceTester
     multiprocessing.set_start_method("spawn", force=True)
 
     size = 1000000  
