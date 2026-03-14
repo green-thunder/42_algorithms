@@ -16,6 +16,7 @@ nodes = [1,2,3,4,5,6]
 linkedList = LinkedList(nodes=nodes)
 
 middle_node = LinkedList(middleNode(linkedList.head))
-middle_node.printNodes()
+print(middle_node)
 
-
+# middle_node = linkedList.middleNode()
+# print(middle_node)

@@ -17,12 +17,22 @@ class LinkedList:
         self.head = head
 
 
-    def printNodes(self):
+    def __repr__(self):
         curr = self.head
         listNodes = []
         while curr:
             listNodes.append(curr.val)
             curr = curr.next
 
-        print(listNodes)
+        return listNodes.__repr__()
+
+
+    def middleNode(self):
+        slow = fast = self.head
+
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+
+        return LinkedList(slow)
         
