@@ -33,9 +33,6 @@ class LinkedList:
 
         return self.len
 
-
-
-
     def __repr__(self):
         curr = self.head
         listNodes = []
@@ -44,6 +41,18 @@ class LinkedList:
             curr = curr.next
 
         return listNodes.__repr__()
+    
+    def __reversed__(self):
+        curr = self.head
+        prev = None
+
+        while curr:
+            new_node = Node(curr.val)
+            new_node.next = prev
+            prev = new_node
+            curr = curr.next
+
+        return LinkedList(prev)
 
 
     def middleNode(self):
@@ -54,4 +63,19 @@ class LinkedList:
             fast = fast.next.next
 
         return LinkedList(slow)
-        
+    
+    def reverse(self, inplace=True):
+        curr = self.head
+        prev = None
+
+        while curr:
+            new_node = Node(curr.val)
+            new_node.next = prev
+            prev = new_node
+            curr = curr.next
+
+        if inplace:
+            self.head = prev
+            return
+
+        return LinkedList(prev)
