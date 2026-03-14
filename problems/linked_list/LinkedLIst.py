@@ -6,7 +6,9 @@ class Node:
 
 class LinkedList:
     def __init__(self, head=None, nodes=[0]):
+        self.len = None
         if not head:
+            self.len = len(nodes)
             head = Node(nodes[0])
             curr = head
             for i in range(1, len(nodes)):
@@ -15,6 +17,23 @@ class LinkedList:
                 curr = curr.next
         
         self.head = head
+        if not self.len:
+            self.__len__()
+
+
+    def __len__(self):
+        if not self.len:
+            length = 0
+            curr = self.head
+            while curr:
+                length += 1
+                curr = curr.next
+
+            self.len = length
+
+        return self.len
+
+
 
 
     def __repr__(self):
