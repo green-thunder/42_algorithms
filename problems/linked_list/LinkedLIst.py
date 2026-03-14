@@ -53,7 +53,19 @@ class LinkedList:
             curr = curr.next
 
         return LinkedList(prev)
+    
+    def __eq__(self, other):
+        curr1 = self.head
+        curr2 = other.head
 
+        while curr1 and curr2:
+            if curr1.val != curr2.val:
+                return False
+            
+            curr1 = curr1.next
+            curr2 = curr2.next
+
+        return not(curr1 or curr2)
 
     def middleNode(self):
         slow = fast = self.head
