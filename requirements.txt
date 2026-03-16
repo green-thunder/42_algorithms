@@ -1,4 +1,5 @@
 execnet==2.1.2
+graphviz==0.21
 iniconfig==2.3.0
 packaging==26.0
 pluggy==1.6.0
