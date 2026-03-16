@@ -116,3 +116,157 @@ class LinkedList:
         prev.next = prev.next.next
         self.head = dummy.next
         return target
+
+    def makeLoop(self, index, inplace=False, visualize=False):
+        if not isinstance(index, int):
+            raise TypeError("index must be int")
+
+        if self.head is None:
+            raise IndexError("makeLoop index out of range")
+
+        length = self.len
+       
+        if index < -length or index >= length:
+            raise IndexError("makeLoop index out of range")
+
+        if index < 0:
+            index += length
+
+        if not inplace:
+            values = []
+            cur = self.head
+            while cur:
+                values.append(cur.val)
+                cur = cur.next
+
+            new_list = LinkedList(nodes=values)
+            target_list = new_list
+        else:
+            target_list = self
+
+        cur = target_list.head
+        target = None
+        last = None
+        i = 0
+        while cur:
+            if i == index:
+                target = cur
+            last = cur
+            cur = cur.next
+            i += 1
+
+        last.next = target
+        if visualize:
+            target_list.visualize()
+            
+        if not inplace:
+            return target_list
+
+    def visualize_dot(self, max_nodes=100):
+        if not isinstance(max_nodes, int):
+            raise TypeError("max_nodes must be int")
+        if max_nodes <= 0:
+            raise ValueError("max_nodes must be > 0")
+
+        lines = ["digraph LinkedList {", "  rankdir=LR;", "  node [shape=circle];"]
+        node_ids = {}
+        nodes = []
+
+        cur = self.head
+        steps = 0
+        while cur and steps < max_nodes:
+            obj_id = id(cur)
+            if obj_id in node_ids:
+                break
+            node_name = f"n{len(nodes)}"
+            node_ids[obj_id] = node_name
+            nodes.append(cur)
+            cur = cur.next
+            steps += 1
+
+        for i, node in enumerate(nodes):
+            label = str(node.val).replace('"', '\\"')
+            lines.append(f'  n{i} [label="{label}"];')
+
+        for i, node in enumerate(nodes):
+            nxt = node.next
+            if nxt is None:
+                continue
+            nxt_id = id(nxt)
+            if nxt_id in node_ids:
+                lines.append(f"  n{i} -> {node_ids[nxt_id]};")
+            else:
+                break
+
+        lines.append("}")
+        return "\n".join(lines)
+
+    def visualize_text(self, max_nodes=100):
+        if not isinstance(max_nodes, int):
+            raise TypeError("max_nodes must be int")
+        if max_nodes <= 0:
+            raise ValueError("max_nodes must be > 0")
+
+        parts = []
+        node_ids = {}
+        nodes = []
+
+        cur = self.head
+        steps = 0
+        loop_at = None
+        while cur and steps < max_nodes:
+            obj_id = id(cur)
+            if obj_id in node_ids:
+                loop_at = node_ids[obj_id]
+                break
+            node_ids[obj_id] = len(nodes)
+            nodes.append(cur)
+            parts.append(str(cur.val))
+            cur = cur.next
+            steps += 1
+
+        if not nodes:
+            return "Empty"
+
+        text = " -> ".join(parts)
+        if loop_at is not None:
+            text += f" -> (loops to list[{loop_at}] = {parts[loop_at]})"
+        elif cur is not None:
+            text += " -> (truncated)"
+
+        return text
+
+    def visualize_png(self, output_path=None, max_nodes=100):
+        if output_path is not None and not isinstance(output_path, str):
+            raise TypeError("output_path must be str or None")
+        if not isinstance(max_nodes, int):
+            raise TypeError("max_nodes must be int")
+        if max_nodes <= 0:
+            raise ValueError("max_nodes must be > 0")
+
+        try:
+            from graphviz import Source
+        except ImportError as exc:
+            raise ImportError(
+                "graphviz package is required for visualize_png. "
+                "Install with: pip install graphviz"
+            ) from exc
+
+        import os
+
+        if output_path is None:
+            base_dir = os.path.dirname(__file__)
+            images_dir = os.path.join(base_dir, "images")
+            os.makedirs(images_dir, exist_ok=True)
+            output_path = os.path.join(images_dir, "linked_list")
+
+        dot = self.visualize_dot(max_nodes=max_nodes)
+        src = Source(dot)
+        src.format = "png"
+        src.render(filename=output_path, cleanup=True)
+        return output_path + ".png"
+    
+    def visualize(self, output_path=None, max_nodes=100):
+        self.visualize_png(output_path, max_nodes)
+        vizual_text = self.visualize_text(max_nodes)
+        print(vizual_text)
