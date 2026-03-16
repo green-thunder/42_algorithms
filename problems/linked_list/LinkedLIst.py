@@ -91,3 +91,28 @@ class LinkedList:
             return
 
         return LinkedList(prev)
+    
+    def pop(self, index=-1):
+        if not isinstance(index, int):
+            raise TypeError("index must be int")
+
+        if self.head is None:
+            raise IndexError("pop from empty list")
+
+        length = self.len
+      
+        if index < -length or index >= length:
+            raise IndexError("pop index out of range")
+
+        if index < 0:
+            index += length
+
+        dummy = Node(0, self.head)
+        prev = dummy
+        for _ in range(index):
+            prev = prev.next
+
+        target = prev.next.val
+        prev.next = prev.next.next
+        self.head = dummy.next
+        return target
